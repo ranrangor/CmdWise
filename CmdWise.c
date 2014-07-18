@@ -214,6 +214,7 @@ static int remove_cmd_from_cmdhead(cw_cmdhead_t*head,cw_cmd_t*cmd)
     }
     return 0;
 */
+    head->n_cmds--;
     return 1;
 
 }
@@ -342,7 +343,7 @@ int _cw_invoke_cmd(cw_cmdhead_t*cmdhead,char**argvs)
     cw_cmd_t*curcmd=find_cmd_from_cmdhead_(cmdhead,*argvs);
 
     if(curcmd){
-        if(!cw_get_current_cmd()){
+        if(!cw_get_current_cmd()){//each line's first cmd(chosen tobe the Main cmd)
             cw_set_current_cmd(curcmd);
         }
         cw_set_llast_cmd(curcmd);
@@ -350,6 +351,7 @@ int _cw_invoke_cmd(cw_cmdhead_t*cmdhead,char**argvs)
         return _cw_invoke_cmd(&curcmd->subcmds,&argvs[1]);
 
     }else{ //can not find a cmd named `*argvs'
+        // so this is a argument.
         if(cw_get_llast_cmd()){//last available cmd callback;
             //To filter separator `--'
             apos=get_valid_argvs_pos(argvs);
@@ -361,8 +363,9 @@ int _cw_invoke_cmd(cw_cmdhead_t*cmdhead,char**argvs)
             if(pcallback)
                 pcallback(argvs+apos);
             else{
-                fprintf(stderr,"No Corresponding Callback set for CMD[%s]\n",curp_cmd->cmd_name);
-                return 0;
+                fprintf(stderr,"No Corresponding Callback set for CMD[%s:%s]\n",
+                        curp_cmd->cmd_name,last_cmd->cmd_name);
+//                return 0;
             }
             cw_arg_t tp=last_cmd->cmd_argtype;
             //reset llast cmd ref.

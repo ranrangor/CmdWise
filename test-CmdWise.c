@@ -112,14 +112,15 @@ int main(int argc,char**argv)
         
 
         argvs=cw_parse_line(linebuf);
-
+        cw_print_argvs(argvs);
+    
 
         cw_invoke_cmd(argvs);
 
-        cw_print_argvs(argvs);
 
         cw_free_argvs(argvs);
 
+        printf("-=-=-=-=-=-=-=-=-=-\n");
     }
 
 
