@@ -99,8 +99,8 @@ static void del_cmd(cw_cmd_t*cmd)
     free(cmd);
 
 }
-
-static cw_cmd_t*find_cmd_from_cmdhead(cw_cmdhead_t*head,const char*cname,cw_cmd_pair_t*opair/*out*/)
+/*
+static cw_cmd_t*find_cmd_from_cmdhead(cw_cmdhead_t*head,const char*cname,cw_cmd_pair_t*opair)
 {
     
     cw_cmd_t*cur_cmd=head->cmd_heads;
@@ -132,8 +132,8 @@ static cw_cmd_t*find_cmd_from_cmdhead(cw_cmdhead_t*head,const char*cname,cw_cmd_
 
 }
 
-
-static cw_cmd_t*find_cmd_from_cmdhead_(cw_cmdhead_t*head,const char*cname)
+*/
+static cw_cmd_t*find_cmd_from_cmdhead(cw_cmdhead_t*head,const char*cname)
 {
     
     cw_cmd_t*cur_cmd=head->cmd_heads;
@@ -181,7 +181,7 @@ static int remove_cmd_from_cmdhead(cw_cmdhead_t*head,cw_cmd_t*cmd)
         return 0;
 
 //    cw_cmd_pair_t cmd_pair;
-    cw_cmd_t*cur=find_cmd_from_cmdhead_(head,cmd->cmd_name);//,&cmd_pair);
+    cw_cmd_t*cur=find_cmd_from_cmdhead(head,cmd->cmd_name);//,&cmd_pair);
     
     if(!cur){
         return 0;
@@ -200,20 +200,7 @@ static int remove_cmd_from_cmdhead(cw_cmdhead_t*head,cw_cmd_t*cmd)
         fprintf(stderr,"Can not get here!!!\n");
 
     }
-/*
-    if(cmd_pair.cur_cmd){
-        if(cmd_pair.last_cmd){
-            cmd_pair.last_cmd->next=cmd_pair.cur_cmd->next; 
-            return 1;
-        }else{
-            //last_cmd==NULL;head node
-            head->cmd_heads=cmd_pair.cur_cmd->next;
-            return 2;
-        }
 
-    }
-    return 0;
-*/
     head->n_cmds--;
     return 1;
 
@@ -237,7 +224,7 @@ void _cw_register_cmd(cw_cmdhead_t*cmdhead,char**argvs,cw_arg_t argtype,const ch
         fprintf(stderr,"Unrecognitived CMDs\n");
    }
 
-   cw_cmd_t*cur_cmd=find_cmd_from_cmdhead_(cmdhead,cur_cmd_name);
+   cw_cmd_t*cur_cmd=find_cmd_from_cmdhead(cmdhead,cur_cmd_name);
 
    if(!cur_cmd){
            cw_cmd_t*ncmd;
@@ -278,7 +265,7 @@ int _cw_unregister_cmd(cw_cmdhead_t*cmdhead,char**argvs)
         return 0;
    }
 
-    cw_cmd_t*cur_cmd=find_cmd_from_cmdhead_(cmdhead,cur_cmd_name);
+    cw_cmd_t*cur_cmd=find_cmd_from_cmdhead(cmdhead,cur_cmd_name);
     
     if(!cur_cmd)
         return 0;
@@ -340,7 +327,7 @@ int _cw_invoke_cmd(cw_cmdhead_t*cmdhead,char**argvs)
     int largs;
     cw_cmd_t*last_cmd,*curp_cmd;
 
-    cw_cmd_t*curcmd=find_cmd_from_cmdhead_(cmdhead,*argvs);
+    cw_cmd_t*curcmd=find_cmd_from_cmdhead(cmdhead,*argvs);
 
     if(curcmd){
         if(!cw_get_current_cmd()){//each line's first cmd(chosen tobe the Main cmd)
